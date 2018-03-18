@@ -147,10 +147,10 @@ class CSV
 
         // required
         $titles    = self::$titles;
-        $delimiter = self::$delimiter;
-        $headers   = self::getHeaders();
         $contents  = self::$contents;
         $fields    = self::$fields;
+        $delimiter = self::$delimiter;
+        $headers   = self::getHeaders();
 
         /**
          * The CSV isn’t actually outputted until send() is called 
