@@ -95,7 +95,19 @@
             <div class="container" id="app">
                 <div class="row">
                     <div>
-                        <select name="unit" v-model="unit" @change="changeUnit(unit)">
+                        <input name="activityStartDate" v-model="activityStartDate" @change="changeActivityDate()">
+                        <span>ActivityStartDate: @{{ activityStartDate }}</span>
+                    </div>
+                    <div>
+                        <input name="purchaseStartDate" v-model="purchaseStartDate" @change="changePurchaseDate()">
+                        <span>PurchaseStartDate: @{{ purchaseStartDate }}</span>
+                    </div>
+                    <div>
+                        <input name="activityArea" v-model="activityArea" @change="changeActivityArea()">
+                        <span>ActivityArea: @{{ activityArea }}</span>
+                    </div>
+                    <div>
+                        <select name="unit" v-model="unit" @change="changeUnit()">
                             <option value="0">All</option>
                             <option value="1">Even</option>
                             <option value="2">Odd</option>
@@ -103,14 +115,14 @@
                         <span>Selected: @{{ unit }}</span>
                     </div>
                     <div>
-                        <select name="titleType" v-model="titleType" @change="sortByTitle(titleType)">
+                        <select name="titleType" v-model="titleType" @change="sortByTitle()">
                             <option value="1">Title ASC</option>
                             <option value="2">Title DESC</option>
                         </select>
                         <span>Selected: @{{ titleType }}</span>
                     </div>
                     <div>
-                        <select name="rpp" v-model="rpp" @change="changeRecordsPerPage(rpp)">
+                        <select name="rpp" v-model="rpp" @change="changeRecordsPerPage()">
                             <option value="20">20</option>
                             <option value="50">50</option>
                             <option value="100">100</option>

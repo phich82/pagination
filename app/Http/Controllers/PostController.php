@@ -137,8 +137,25 @@ class PostController extends Controller
 
     public function paginator(Request $request)
     {
-        $rpp = $request->query('rpp');
-        $posts = Post::paginate($rpp ? $rpp : 10);
+        $rpp = $request->input('rpp');
+        $type = $request->input('type') == 1 ? 'asc' : 'desc';
+        $unit = $request->input('unit') == 1 ? 'MOD(id,2)=0' : ($request->input('unit') == 2 ? 'MOD(id,2)=1' : null);
+        $asd = $request->input('activityStartDate');
+        $psd = $request->input('purchaseStartDate');
+        $aa = $request->input('activityArea');
+
+        $o = Post::orderBy('title', $type);
+        if ($unit) {
+            $o->whereRaw($unit);
+        }
+        if ($asd) {
+            $o->where('created_at', '<=', $asd);
+        }
+        if ($aa) {
+            //$o->leftJoin('activities', 'activities.title', 'promotions.title');
+            //$o->leftJoin('activities', 'areas.title', 'areas.title');
+        }
+        $posts = $o->paginate($rpp ? $rpp : 10);
         $client = new Client();
 
         $out = [];

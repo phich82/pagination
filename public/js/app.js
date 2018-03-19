@@ -14001,7 +14001,10 @@ var app = new Vue({
         pagination: { 'current_page': 1 },
         rpp: 20,
         unit: 0,
-        titleType: 1
+        titleType: 1,
+        activityStartDate: null,
+        purchaseStartDate: null,
+        activityArea: null
     },
     // define methods
     methods: {
@@ -14009,7 +14012,15 @@ var app = new Vue({
         fetchPosts: function fetchPosts(rpp) {
             var _this = this;
 
-            axios.get('/paginator/posts?page=' + this.pagination.current_page + (rpp ? '&rpp=' + rpp : '')).then(function (response) {
+            console.log('Type: ' + this.titleType + ' - rpp: ' + this.rpp + ' - unit: ' + this.unit);
+            axios.post('/paginator/posts?page=' + this.pagination.current_page, {
+                type: this.titleType,
+                rpp: this.rpp,
+                unit: this.unit,
+                activityStartDate: this.activityStartDate,
+                purchaseStartDate: this.purchaseStartDate,
+                activityArea: this.activityArea
+            }).then(function (response) {
                 console.log(response);
                 _this.posts = response.data.data.data;
                 console.log(response.data.photos);
@@ -14022,23 +14033,20 @@ var app = new Vue({
             this.fetchPosts(rpp);
         },
         sortByTitle: function sortByTitle(type) {
-            var _this2 = this;
-
-            console.log('Type: ' + this.titleType + ' - rpp: ' + this.rpp + ' - unit: ' + this.unit);
-            axios.post('/posts/sortby/title?page=' + this.pagination.current_page, {
-                type: this.titleType,
-                rpp: this.rpp,
-                unit: this.unit
-            }).then(function (response) {
-                console.log(response);
-                _this2.posts = response.data.data.data;
-                console.log(response.data.photos);
-                _this2.pagination = response.data.pagination;
-            }).catch(function (error) {
-                return console.log(error.response.data);
-            });
+            this.fetchPosts();
         },
-        changeUnit: function changeUnit(unit) {}
+        changeUnit: function changeUnit() {
+            this.fetchPosts();
+        },
+        changeActivityDate: function changeActivityDate() {
+            this.fetchPosts();
+        },
+        changePurchaseDate: function changePurchaseDate() {
+            this.fetchPosts();
+        },
+        changeActivityArea: function changeActivityArea() {
+            this.fetchPosts();
+        }
     },
     // Lifecycle Hooks
     mounted: function mounted() {

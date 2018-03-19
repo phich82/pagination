@@ -25,13 +25,24 @@ const app = new Vue({
         pagination: { 'current_page': 1 },
         rpp: 20,
         unit: 0,
-        titleType: 1
+        titleType: 1,
+        activityStartDate: null,
+        purchaseStartDate: null,
+        activityArea: null
     },
     // define methods
     methods: {
         // fetch data from server
         fetchPosts: function (rpp) {
-            axios.get('/paginator/posts?page=' + this.pagination.current_page + (rpp ? '&rpp='+rpp : ''))
+            console.log('Type: ' + this.titleType + ' - rpp: ' + this.rpp + ' - unit: ' + this.unit);
+            axios.post('/paginator/posts?page=' + this.pagination.current_page, {
+                type: this.titleType,
+                rpp: this.rpp,
+                unit: this.unit,
+                activityStartDate: this.activityStartDate,
+                purchaseStartDate: this.purchaseStartDate,
+                activityArea: this.activityArea
+            })
                 .then(response => {
                     console.log(response);
                     this.posts = response.data.data.data;
@@ -44,22 +55,19 @@ const app = new Vue({
             this.fetchPosts(rpp);
         },
         sortByTitle: function (type) {
-            console.log('Type: ' + this.titleType + ' - rpp: ' + this.rpp + ' - unit: ' + this.unit);
-            axios.post('/posts/sortby/title?page=' + this.pagination.current_page, {
-                type: this.titleType,
-                rpp: this.rpp,
-                unit: this.unit
-            })
-                .then(response => {
-                    console.log(response);
-                    this.posts = response.data.data.data;
-                    console.log(response.data.photos);
-                    this.pagination = response.data.pagination;
-                })
-                .catch(error => console.log(error.response.data));
+            this.fetchPosts();
         },
-        changeUnit: function (unit) {
-
+        changeUnit: function () {
+            this.fetchPosts();
+        },
+        changeActivityDate: function () {
+            this.fetchPosts();
+        },
+        changePurchaseDate: function () {
+            this.fetchPosts();
+        },
+        changeActivityArea: function () {
+            this.fetchPosts();
         }
     },
     // Lifecycle Hooks
