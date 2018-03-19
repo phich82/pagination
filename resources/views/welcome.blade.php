@@ -80,7 +80,7 @@
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
+        <div class="container">
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
@@ -93,16 +93,41 @@
             @endif
 
             <div class="container" id="app">
-                <div class="box">
-                    <article>
-                        <div class="content" v-for="post in posts">
-                            <h1>@{{ post.title }}</h1>
+                <div class="row">
+                    <div>
+                        <select name="unit" v-model="unit" @change="changeUnit(unit)">
+                            <option value="0">All</option>
+                            <option value="1">Even</option>
+                            <option value="2">Odd</option>
+                        </select>
+                        <span>Selected: @{{ unit }}</span>
+                    </div>
+                    <div>
+                        <select name="titleType" v-model="titleType" @change="sortByTitle(titleType)">
+                            <option value="1">Title ASC</option>
+                            <option value="2">Title DESC</option>
+                        </select>
+                        <span>Selected: @{{ titleType }}</span>
+                    </div>
+                    <div>
+                        <select name="rpp" v-model="rpp" @change="changeRecordsPerPage(rpp)">
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <span>Selected: @{{ rpp }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <div class="content" v-for="(post, index) in posts">
+                            <h1>@{{ (index + 1) + '.' + post.title }}</h1>
                             <p>@{{ post.url }}</p>
                             <p>@{{ post.body }}</p>
                         </div>
-                    </article>
+                    </div>
                     {{--  pagination  --}}
-                    <pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="fetchPosts()"></pagination>
+                    <pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="fetchPosts(rpp)"></pagination>
                 </div>
             </div>
         </div>

@@ -134,4 +134,79 @@ class PostController extends Controller
         $items = $items instanceof Collection ? $items : collect($items);// Collection::make($items);
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
+
+    public function paginator(Request $request)
+    {
+        $rpp = $request->query('rpp');
+        $posts = Post::paginate($rpp ? $rpp : 10);
+        $client = new Client();
+
+        $out = [];
+        foreach ($posts as $k => $post) {
+            try {
+                $ResponsePhoto = $client->request('GET', 'https://jsonplaceholder.typicode.com/photos/'.$post->id);
+                $photo = json_decode($ResponsePhoto->getBody(true)->getContents());
+                $posts[$k]->url = $photo->url;
+                $out[] = $k;
+            } catch (\Exception $e) {
+                $posts[$k]->url = null;
+                $out[] = $k;
+            }
+        }
+        $response = [
+            'pagination' => [
+                'total'        => $posts->total(),
+                'per_page'     => $posts->perPage(),
+                'current_page' => $posts->currentPage(),
+                'last_page'    => $posts->lastPage(),
+                'from'         => $posts->firstItem(),
+                'to'           => $posts->lastItem()
+            ],
+            'data' => $posts,
+            'photos' => $out
+        ];
+        
+        return response()->json($response);        
+    }
+
+    public function sortByTitle(Request $request)
+    {
+        $rpp = $request->input('rpp');
+        $type = $request->input('type');
+        $unit = $request->input('unit') == 1 ? 'MOD(id,2)=0' : ($request->input('unit') == 2 ? 'MOD(id,2)=1' : null);
+        if ($unit) {
+            $posts = Post::whereRaw($unit)->orderBy('title', $type)->paginate($rpp ? $rpp : 10);
+        } else {
+            $posts = Post::orderBy('title', $type)->paginate($rpp ? $rpp : 10);
+        }
+        
+        $client = new Client();
+
+        $out = [];
+        foreach ($posts as $k => $post) {
+            try {
+                $ResponsePhoto = $client->request('GET', 'https://jsonplaceholder.typicode.com/photos/'.$post->id);
+                $photo = json_decode($ResponsePhoto->getBody(true)->getContents());
+                $posts[$k]->url = $photo->url;
+                $out[] = $k;
+            } catch (\Exception $e) {
+                $posts[$k]->url = null;
+                $out[] = $k;
+            }
+        }
+        $response = [
+            'pagination' => [
+                'total'        => $posts->total(),
+                'per_page'     => $posts->perPage(),
+                'current_page' => $posts->currentPage(),
+                'last_page'    => $posts->lastPage(),
+                'from'         => $posts->firstItem(),
+                'to'           => $posts->lastItem()
+            ],
+            'data' => $posts,
+            'photos' => $out
+        ];
+        
+        return response()->json($response);        
+    }
 }

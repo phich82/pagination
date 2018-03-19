@@ -20,6 +20,8 @@ Route::get('/', function () {
 });
 
 Route::get('posts', 'PostController@index');
+Route::get('paginator/posts', 'PostController@paginator');
+Route::post('posts/sortby/title', 'PostController@sortByTitle');
 
 Route::get('csv2', function () {
     return CSV::titles(['id' => 'Id', 'title' => 'Title', 'body' => 'Body'])

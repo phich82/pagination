@@ -13998,15 +13998,18 @@ var app = new Vue({
     el: '#app',
     data: {
         posts: {},
-        pagination: { 'current_page': 1 }
+        pagination: { 'current_page': 1 },
+        rpp: 20,
+        unit: 0,
+        titleType: 1
     },
     // define methods
     methods: {
         // fetch data from server
-        fetchPosts: function fetchPosts() {
+        fetchPosts: function fetchPosts(rpp) {
             var _this = this;
 
-            axios.get('/posts?page=' + this.pagination.current_page).then(function (response) {
+            axios.get('/paginator/posts?page=' + this.pagination.current_page + (rpp ? '&rpp=' + rpp : '')).then(function (response) {
                 console.log(response);
                 _this.posts = response.data.data.data;
                 console.log(response.data.photos);
@@ -14014,7 +14017,28 @@ var app = new Vue({
             }).catch(function (error) {
                 return console.log(error.response.data);
             });
-        }
+        },
+        changeRecordsPerPage: function changeRecordsPerPage(rpp) {
+            this.fetchPosts(rpp);
+        },
+        sortByTitle: function sortByTitle(type) {
+            var _this2 = this;
+
+            console.log('Type: ' + this.titleType + ' - rpp: ' + this.rpp + ' - unit: ' + this.unit);
+            axios.post('/posts/sortby/title?page=' + this.pagination.current_page, {
+                type: this.titleType,
+                rpp: this.rpp,
+                unit: this.unit
+            }).then(function (response) {
+                console.log(response);
+                _this2.posts = response.data.data.data;
+                console.log(response.data.photos);
+                _this2.pagination = response.data.pagination;
+            }).catch(function (error) {
+                return console.log(error.response.data);
+            });
+        },
+        changeUnit: function changeUnit(unit) {}
     },
     // Lifecycle Hooks
     mounted: function mounted() {

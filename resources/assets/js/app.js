@@ -22,13 +22,16 @@ const app = new Vue({
     el: '#app',
     data: {
         posts: {},
-        pagination: { 'current_page': 1 }
+        pagination: { 'current_page': 1 },
+        rpp: 20,
+        unit: 0,
+        titleType: 1
     },
     // define methods
     methods: {
         // fetch data from server
-        fetchPosts: function () {
-            axios.get('/posts?page=' + this.pagination.current_page)
+        fetchPosts: function (rpp) {
+            axios.get('/paginator/posts?page=' + this.pagination.current_page + (rpp ? '&rpp='+rpp : ''))
                 .then(response => {
                     console.log(response);
                     this.posts = response.data.data.data;
@@ -36,6 +39,27 @@ const app = new Vue({
                     this.pagination = response.data.pagination;
                 })
                 .catch(error => console.log(error.response.data));
+        },
+        changeRecordsPerPage: function (rpp) {
+            this.fetchPosts(rpp);
+        },
+        sortByTitle: function (type) {
+            console.log('Type: ' + this.titleType + ' - rpp: ' + this.rpp + ' - unit: ' + this.unit);
+            axios.post('/posts/sortby/title?page=' + this.pagination.current_page, {
+                type: this.titleType,
+                rpp: this.rpp,
+                unit: this.unit
+            })
+                .then(response => {
+                    console.log(response);
+                    this.posts = response.data.data.data;
+                    console.log(response.data.photos);
+                    this.pagination = response.data.pagination;
+                })
+                .catch(error => console.log(error.response.data));
+        },
+        changeUnit: function (unit) {
+
         }
     },
     // Lifecycle Hooks
