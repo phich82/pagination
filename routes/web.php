@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 Route::get('posts', 'PostController@index');
 Route::post('paginator/posts', 'PostController@paginator');
-Route::post('posts/sortby/title', 'PostController@sortByTitle');
+Route::get('paginator/list', 'PostController@showPosts');
 
 Route::get('csv2', function () {
     return CSV::titles(['id' => 'Id', 'title' => 'Title', 'body' => 'Body'])

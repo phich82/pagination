@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use GuzzleHttp\Client;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 //use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -185,45 +186,13 @@ class PostController extends Controller
         
         return response()->json($response);        
     }
-
-    public function sortByTitle(Request $request)
+    
+    public function showPosts(Request $request)
     {
-        $rpp = $request->input('rpp');
-        $type = $request->input('type');
-        $unit = $request->input('unit') == 1 ? 'MOD(id,2)=0' : ($request->input('unit') == 2 ? 'MOD(id,2)=1' : null);
-        if ($unit) {
-            $posts = Post::whereRaw($unit)->orderBy('title', $type)->paginate($rpp ? $rpp : 10);
-        } else {
-            $posts = Post::orderBy('title', $type)->paginate($rpp ? $rpp : 10);
+        $posts = Post::paginate(5);
+        if ($request->ajax()) {
+            return Response::json(View::make('posts', array('posts' => $posts))->render());
         }
-        
-        $client = new Client();
-
-        $out = [];
-        foreach ($posts as $k => $post) {
-            try {
-                $ResponsePhoto = $client->request('GET', 'https://jsonplaceholder.typicode.com/photos/'.$post->id);
-                $photo = json_decode($ResponsePhoto->getBody(true)->getContents());
-                $posts[$k]->url = $photo->url;
-                $out[] = $k;
-            } catch (\Exception $e) {
-                $posts[$k]->url = null;
-                $out[] = $k;
-            }
-        }
-        $response = [
-            'pagination' => [
-                'total'        => $posts->total(),
-                'per_page'     => $posts->perPage(),
-                'current_page' => $posts->currentPage(),
-                'last_page'    => $posts->lastPage(),
-                'from'         => $posts->firstItem(),
-                'to'           => $posts->lastItem()
-            ],
-            'data' => $posts,
-            'photos' => $out
-        ];
-        
-        return response()->json($response);        
+        return view('posts', array('posts' => $posts));
     }
 }
