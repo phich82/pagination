@@ -21,23 +21,28 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label>Start Date</label>
-                            <input type="text" name="startDate" onchange="updateBasic(this)" data-id="1" class="form-control start-date datepicker"/>
+                            <input type="text" name="startDate" onchange="updateBasic(this)" id="ids_1" class="form-control start-date datepicker"/>
                         </div>
                         <div class="col-md-4">
                             <label>Amount</label>
-                            <input type="text" name="amount" data-id="1" onchange="updateBasic(this)" class="form-control"/>
+                            <input type="text" name="amount" id="ida_1" onchange="updateBasic(this)" class="form-control"/>
                         </div>
                     </div>
                     <div class="row">
-                            <div class="col-md-4">
-                                <label>Start Date</label>
-                                <input type="text" name="startDate" onchange="updateBasic(this)" data-id="2" class="form-control start-date datepicker"/>
-                            </div>
-                            <div class="col-md-4">
-                                <label>Amount</label>
-                                <input type="text" name="amount" onchange="updateBasic(this)" data-id="2" class="form-control"/>
-                            </div>
+                        <div class="col-md-4">
+                            <label>Start Date</label>
+                            <input type="text" name="startDate" onchange="updateBasic(this)" id="ids_2" class="form-control start-date datepicker"/>
                         </div>
+                        <div class="col-md-4">
+                            <label>Amount</label>
+                            <input type="text" name="amount" onchange="updateBasic(this)" id="ida_2" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="margin-top: 10px;">
+                            <button class="btn btn-primary btnSave" disabled="disabled">Save</button>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -47,44 +52,55 @@
             <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
             <script>
-                $(function() {
-                    $(".datepicker2").datepicker({
-                        dateFormat: "yy-mm-dd",
-                        // onSelect: function (date, obj) {
-                        //     console.log(obj);
-                        //     alert(date);
-                        // }
-                    });
-
-                    var errors = [];
-                    $('.start-date').change(function () {
-                        validateScheduleBasic(this);
-                    });
-                });
+                var errors = [];
+                var status = false;
 
                 function validateScheduleBasic(objThis) {
-                    $(objThis).parent().find('label.error').remove();
+
+                    //if (!status) {
+                        status = true;
+                    //}
+
+                    // remove error message if exists
+                    removeErrorMessage($(objThis));
                     var rowThis = $(objThis).closest('div.row');
 
                     var inputStartDate = rowThis.find('input[name="startDate"]'); // $(objThis).val();
                     var inputAmount    = rowThis.find('input[name="amount"]');
                     var startDate = inputStartDate.val();
                     var amount    = inputAmount.val();
-
+                    var idSDate   = inputStartDate.attr('id');
+                    var idAmount  = inputAmount.attr('id');
+                    
+                    // validate StartDate
                     if (isValidDateYmd(startDate, '-')) {
+                        // remove error of startDate if exists
+                        removeError(idSDate);
+                        // validate amount
                         if (!is_numeric(amount)) {
-                            inputAmount.parent().find('label.error').remove();
+                            // add error for amount
+                            addError(idAmount);
+                            // remove error message if exists
+                            removeErrorMessage(inputAmount);
+                            // show new error message
                             showError('Please enter a valid number.', inputAmount);
                         } else {
+                            removeError(idAmount);
+                            removeErrorMessage(inputAmount);
+                            removeErrorMessage(inputStartDate);
                             console.log('ok');
                         }
                     } else {
+                        // add error for startDate
+                        addError(idSDate);
+                        // remove error message if exists
+                        removeErrorMessage(inputStartDate);
+                        // show new error message
                         showError('Please enter a valid date.', inputStartDate);
                     }
-                }
-
-                function showError(message, obj) {
-                    $('<label style="color:red;" class="error">' + message + '</label>').insertBefore(obj);
+                    console.log(errors);
+                    console.log(status);
+                    trackSaveBtn(errors, status);
                 }
 
                 function updateBasic(objThis) {
@@ -107,6 +123,43 @@
                     });
                 }
 
+                // Save button
+                function trackSaveBtn(errors, status) {
+                    console.log(errors);
+                    console.log(status);
+                    if (errors.length === 0 && status === true) {
+                        console.log('....enable SAVE....');
+                        $('.btnSave').removeAttr('disabled');
+                        //$('.btnSave').attr('disabled', false);
+                    }
+                }
+                
+                // remove error from errors array
+                function removeError(id) {
+                    var pos = errors.indexOf(id);
+                    if (pos !== -1) {
+                        errors.splice(pos, 1);
+                    }
+                }
+                
+                // add error to an errors array
+                function addError(id) {
+                    if (errors.indexOf(id) === -1) {
+                        errors.push(id);
+                    }
+                }
+                
+                // remove error message from screen
+                function removeErrorMessage(obj) {
+                    obj.parent().find('label.error').remove();
+                }
+                
+                // show error message when value of input changed is wrong
+                function showError(message, obj) {
+                    $('<label style="color:red;" class="error">' + message + '</label>').insertBefore(obj);
+                }
+
+                // check is numeric
                 function is_numeric(n) {
                     return !isNaN(parseFloat(n)) && isFinite(n);
                 }
@@ -146,6 +199,20 @@
                     // Check the range of the day
                     return d > 0 && d <= numDaysOfMonth[m - 1];
                 }
+
+                $(function() {
+                    $(".datepicker2").datepicker({
+                        dateFormat: "yy-mm-dd",
+                        // onSelect: function (date, obj) {
+                        //     console.log(obj);
+                        //     alert(date);
+                        // }
+                    });
+
+                    // $('.start-date').change(function () {
+                    //     validateScheduleBasic(this);
+                    // });
+                });
             </script>
 
         </div>
