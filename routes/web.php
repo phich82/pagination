@@ -23,17 +23,26 @@ Route::get('posts', 'PostController@index');
 Route::post('paginator/posts', 'PostController@paginator');
 Route::get('paginator/list', 'PostController@showPosts');
 
+Route::get('test', 'TestController@index');
+Route::get('test/update', 'TestController@update');
+
 Route::get('csv2', function () {
-    return CSV::titles(['id' => 'Id', 'title' => 'Title', 'body' => 'Body'])
-        // ->contents([
-        //     ['id' => 1, 'title' => 'JavaScript', 'body' => 'This is JavaScript Subject']
-        // ])
+    $titles = ['id' => 'Id', 'title' => 'Title', 'body' => 'Body'];
+    $contents = [
+        ['id' => 1, 'title' => 'JavaScript', 'body' => 'This is JavaScript Subject']
+    ];
+    $filename = 'data';
+    return CSV::titles($titles)
+        // ->filename($filename)
+        // ->contents($contents)
+        // ->sendStream() // all contents
+        // ->sendStream(true) // filter only contents by the required fields
         ->sendStream(function ($fp, $delimiter) {
             // Chunking large queries for no memory leak
             $count = 1;
-            $max = 2;
+            $max   = 2;
             Post::chunk(10, function($posts) use ($fp, $delimiter, &$count, $max) {
-                if ($count > $max) return false;
+                if ($count > $max) return false; // break loop chunk()
                 foreach ($posts as $post) {
                     if ($count > $max) break;
                     // Add each new row

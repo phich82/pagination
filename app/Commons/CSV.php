@@ -183,7 +183,7 @@ class CSV
                 // check contents
                 if (!empty($contents)) {
                     // contents contain total of fields more than total of the required fields (self::fields)
-                    if ($callback === true) { // true: filter by fields required
+                    if ($callback === true) { // true: filter only contents by fields required
                         foreach ($contents as $row) {
                             if (!empty($fields)) {
                                 $out = [];

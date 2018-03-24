@@ -82,8 +82,8 @@
     <body>
         <div class="container">
             <h1>Posts</h1>
-
-            <div class="posts">
+            @include('_list')
+            {{--  <div class="posts">
                 @foreach ($posts as $post)
                     <article>
                         <h2>{{ $post->title }}</h2>
@@ -91,37 +91,79 @@
                     </article>
                 @endforeach
                 {{ $posts->links() }}
-            </div>
+            </div>  --}}
 
             <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
             <script>
-            $(window).on('hashchange', function() {
-                if (window.location.hash) {
-                    var page = window.location.hash.replace('#', '');
-                    if (page == Number.NaN || page <= 0) {
-                        return false;
-                    } else {
-                        getPosts(page);
+                $(window).on('hashchange', function() {
+                    if (window.location.hash) {
+                        var page = window.location.hash.replace('#', '');
+                        if (page == Number.NaN || page <= 0) {
+                            return false;
+                        } else {
+                            getPosts(page);
+                        }
                     }
+                });
+
+                $(function() {
+                    $(document).on('click', '.pagination a', function (e) {
+                        e.preventDefault();
+                        getPosts($(this).attr('href').split('page=')[1]);
+                    });
+                });
+
+                function getPosts(page) {
+                    $.ajax({
+                        url : '/paginator/list?page=' + page,
+                        dataType: 'html',
+                    }).done(function (data) {
+                        $('.posts').html(data);
+                        location.hash = page;
+                    }).fail(function () {
+                        console.log('Posts could not be loaded.');
+                    });
                 }
-            });
-            $(document).ready(function() {
-                $(document).on('click', '.pagination a', function (e) {
-                    getPosts($(this).attr('href').split('page=')[1]);
-                    e.preventDefault();
-                });
-            });
-            function getPosts(page) {
-                $.ajax({
-                    url : 'paginator/list?page=' + page,
-                    dataType: 'json',
-                }).done(function (data) {
-                    $('.posts').html(data);
-                    location.hash = page;
-                }).fail(function () {
-                    alert('Posts could not be loaded.');
-                });
-            }
+
+                function is_numeric(n) {
+                    return !isNaN(parseFloat(n)) && isFinite(n);
+                }
+
+                // Validate date with format "yyyy/mm/dd"
+                function isValidDateYmd(dateStr, delimiter) {
+                    delimiter = delimiter ? delimiter : '/';
+                
+                    // for yyyy-mm-dd
+                    var s = "^\\d{4}\\" + delimiter + "\\d{1,2}\\" + delimiter + "\\d{1,2}$";
+                    var pattern = new RegExp(s, "gi");
+                
+                    // check format
+                    if(!pattern.test(dateStr)) {
+                        return false;
+                    }
+
+                    // get each part of date
+                    var p = dateStr.split(delimiter);
+                    var d = parseInt(p[2], 10);
+                    var m = parseInt(p[1], 10);
+                    var y = parseInt(p[0], 10);
+
+                    // Check month and year
+                    if(y < 1970 || m <= 0 || m > 12) {
+                        return false;
+                    }
+                        
+                    // number of days Of the each month in a year
+                    var numDaysOfMonth = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
+                    // Adjust for leap years
+                    if(y % 400 == 0 || (y % 100 != 0 && y % 4 == 0)) {
+                        numDaysOfMonth[1] = 29;
+                    }
+
+                    // Check the range of the day
+                    return d > 0 && d <= numDaysOfMonth[m - 1];
+                };
             </script>
 
         </div>

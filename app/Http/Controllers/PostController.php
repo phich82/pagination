@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 //use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostController extends Controller
@@ -191,8 +192,14 @@ class PostController extends Controller
     {
         $posts = Post::paginate(5);
         if ($request->ajax()) {
-            return Response::json(View::make('posts', array('posts' => $posts))->render());
+            return view('_list', compact('posts'))->render();
         }
-        return view('posts', array('posts' => $posts));
+        return view('posts', compact('posts'));
+    }
+
+    public function test(Request $request)
+    {
+        $input = $request->all();
+        return response()->json($input);
     }
 }
