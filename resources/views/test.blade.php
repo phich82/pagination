@@ -21,7 +21,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label>Start Date</label>
-                            <input type="text" name="startDate" onchange="updateBasic(this)" id="ids_1" class="form-control start-date datepicker"/>
+                            <input type="text" name="startDate" onchange="updateBasic(this)" id="ids_1" placeholder="yyyy-mm-dd" class="form-control start-date datepicker"/>
                         </div>
                         <div class="col-md-4">
                             <label>Amount</label>
@@ -31,7 +31,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label>Start Date</label>
-                            <input type="text" name="startDate" onchange="updateBasic(this)" id="ids_2" class="form-control start-date datepicker"/>
+                            <input type="text" name="startDate" onchange="updateBasic(this)" id="ids_2" placeholder="yyyy-mm-dd" class="form-control start-date datepicker"/>
                         </div>
                         <div class="col-md-4">
                             <label>Amount</label>
@@ -52,14 +52,16 @@
             <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
             <script>
-                var errors = [];
-                var status = false;
+                var errors   = [];
+                var status   = 0;
+                var messages = {
+                    'planStartDate': 'Please enter a valid date (yyyy-mm-dd).',
+                    'amount': 'Please enter a valid number.'
+                };
 
-                function validateScheduleBasic(objThis) {
-
-                    //if (!status) {
-                        status = true;
-                    //}
+                // update each schedule setting when changed
+                function updateBasic(objThis) {
+                    if (status == 0) { status = 1; }
 
                     // remove error message if exists
                     removeErrorMessage($(objThis));
@@ -83,12 +85,12 @@
                             // remove error message if exists
                             removeErrorMessage(inputAmount);
                             // show new error message
-                            showError('Please enter a valid number.', inputAmount);
+                            showError(messages.amount, inputAmount);
                         } else {
                             removeError(idAmount);
                             removeErrorMessage(inputAmount);
                             removeErrorMessage(inputStartDate);
-                            console.log('ok');
+                            console.log('---Updating schedule setting---');
                         }
                     } else {
                         // add error for startDate
@@ -96,18 +98,15 @@
                         // remove error message if exists
                         removeErrorMessage(inputStartDate);
                         // show new error message
-                        showError('Please enter a valid date.', inputStartDate);
+                        showError(messages.planStartDate, inputStartDate);
                     }
-                    console.log(errors);
-                    console.log(status);
-                    trackSaveBtn(errors, status);
-                }
 
-                function updateBasic(objThis) {
-                    validateScheduleBasic(objThis);
+                    // enable/disable save button
+                    trackSaveBtn();
                 }
-
-                function update(e) {
+                
+                // save all scheduled settings
+                function save(e) {
                     e.preventDefault();
                     var form = $('#frmBasic');
                     var data = form.serialize();
@@ -123,14 +122,12 @@
                     });
                 }
 
-                // Save button
-                function trackSaveBtn(errors, status) {
-                    console.log(errors);
-                    console.log(status);
-                    if (errors.length === 0 && status === true) {
-                        console.log('....enable SAVE....');
+                // enable/disable save button
+                function trackSaveBtn() {
+                    if (errors.length === 0 && status == 1) {
                         $('.btnSave').removeAttr('disabled');
-                        //$('.btnSave').attr('disabled', false);
+                    } else {
+                        $('.btnSave').attr('disabled', true);
                     }
                 }
                 
