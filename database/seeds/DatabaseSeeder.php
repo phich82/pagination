@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use MileBasicSettingsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,7 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         $this->call([
-            PostsTableSeeder::class,
+            //PostsTableSeeder::class,
+            MileBasicSettingsTableSeeder::class,
         ]);
     }
 }

@@ -24,7 +24,9 @@ Route::post('paginator/posts', 'PostController@paginator');
 Route::get('paginator/list', 'PostController@showPosts');
 
 Route::get('test', 'TestController@index');
-Route::get('test/update', 'TestController@update');
+Route::post('test/update', 'TestController@update');
+Route::post('test/save', 'TestController@save');
+Route::post('test/destroy', 'TestController@destroy');
 
 Route::get('csv2', function () {
     $titles = ['id' => 'Id', 'title' => 'Title', 'body' => 'Body'];
@@ -52,6 +54,7 @@ Route::get('csv2', function () {
             });
         });
 });
+
 Route::get('csv', function () {
     // unlimited for download time
     set_time_limit(0);
