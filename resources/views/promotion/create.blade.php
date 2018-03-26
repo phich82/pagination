@@ -316,7 +316,8 @@
                     $('#selActivity').html($(this).text());
                     modal.modal('hide');
                 });
-
+                
+                // reset activity
                 $('.btnClose').on('click', function (e) {
                     $('#selActivity').html('Select activity');
                 });
