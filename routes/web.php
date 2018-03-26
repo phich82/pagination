@@ -28,6 +28,8 @@ Route::post('test/update', 'TestController@update');
 Route::post('test/save', 'TestController@save');
 Route::post('test/destroy', 'TestController@destroy');
 
+Route::get('promotions/create', 'PromotionController@create');
+
 Route::get('csv2', function () {
     $titles = ['id' => 'Id', 'title' => 'Title', 'body' => 'Body'];
     $contents = [

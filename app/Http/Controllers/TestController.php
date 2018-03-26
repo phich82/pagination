@@ -110,7 +110,7 @@ class TestController extends Controller
                 }
             }
         }
-        return response()->json(['success' => true, 'added' => $added, 'updated' => $updated, 'deleted' => $deleted]);
+        return response()->json(['success' => true, 'data' => $this->scheduledSettings, 'added' => $added, 'updated' => $updated, 'deleted' => $deleted]);
     }
 
     public function destroy(Request $request)
