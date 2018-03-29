@@ -28,6 +28,8 @@ Route::post('test/update', 'TestController@update');
 Route::post('test/save', 'TestController@save');
 Route::post('test/destroy', 'TestController@destroy');
 
+Route::get('basic', 'BasicController@index');
+
 Route::get('promotions/create', 'PromotionController@create');
 
 Route::get('csv2', function () {
