@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>New Promotion</title>
+        <title>Edit Promotion</title>
 
         <!-- Fonts -->
         <link href="{{ asset('css/bootstrap/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
@@ -17,7 +17,7 @@
     </head>
     <body>
         <div class="container">
-            <h1>New Promotion</h1>
+            <h1>Edit Promotion</h1>
             <div class="container">
                 {{-- error messages --}}
                 <div class="msgErrors">
@@ -57,7 +57,7 @@
                                     <label>Activity</label>
                                 </div>
                                 <div class="col-md-10" style="padding-left:0;">
-                                    <input type="text" name="activity_title" value="{{ old('activity_title') }}" class="label" style="border: none; width: 100%; {{ old('activity_title') ? '' : ' display: none;' }}" readonly />
+                                    <input type="text" name="activity_title" value="{{ old('activity_title') }}" class="label" style="border: none; width: 100%; display: none;" readonly />
                                     <input type="hidden" name="activity_id" value="{{ old('activity_id') }}" />
                                     <input type="hidden" name="unit" value="1" />
                                     <p>
@@ -72,7 +72,7 @@
                                     <label>Area</label>
                                 </div>
                                 <div class="col-md-10" style="padding-left: 0;">
-                                    <input type="text" name="area_pathJP" value="{{ old('area_pathJP') }}" class="label" style="border: none; width: 100%; {{ old('area_pathJP') ? '' : ' display: none;' }}" readonly />
+                                    <input type="text" name="area_pathJP" value="{{ old('area_pathJP') }}" class="label" style="border: none; width: 100%; display: none;" readonly />
                                     <input type="hidden" name="unit" value="2" />
                                     <p>
                                         <a href="#" data-toggle="modal" data-target="#areaPathModal" data-whatever="@mdo" id="selAreaPath">
@@ -184,7 +184,6 @@
                             <input type="text" class="form-control" onkeypress="searchByActivity(2, event)" name="activityTitle" id="a-title">
                         </div>
                         <div style="margin-top: 20px;">
-                            <div class="msgSearchActivity" style="margin-bottom: 5px; color: red;"></div>
                             <div style="margin-bottom: 5px;">
                                 <span class="resultSearchActivity">0</span> results
                             </div>
@@ -195,7 +194,8 @@
                                         <th scope="col">Activity - Area</th>
                                     </tr>
                                 </thead>
-                                <tbody class="listActivity"></tbody>
+                                <tbody class="listActivity">
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -221,7 +221,6 @@
                             <input type="text" class="form-control" name="areaPath" onkeypress="searchByAreaPath(event)" id="aid">
                         </div>
                         <div style="margin-top: 20px;">
-                            <div class="msgSearchArea" style="margin-bottom: 5px; color: red;"></div>
                             <div style="margin-bottom: 5px;">
                                 <span class="resultSearchAreaPath">0</span> results
                             </div>
@@ -231,7 +230,8 @@
                                         <th scope="col">Area</th>
                                     </tr>
                                 </thead>
-                                <tbody class="listAreaPath"></tbody>
+                                <tbody class="listAreaPath">
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -278,8 +278,6 @@
             function searchByActivity(type, e) {
                 var key = e.keyCode || e.which;
                 if (key == 13) { // press ENTER
-                    $('.msgSearchActivity').html('');
-
                     if (type == 1) { // search by ActivityID
                         var activityID = $(e.target).val();
                         if (activityID) {
@@ -303,12 +301,11 @@
                                     $('.listActivity').html(row);
                                     $('.resultSearchActivity').text(1);
                                 } else {
-                                    $('.msgSearchActivity').html(result.message ? result.message : 'Unexpected error occurred.');
+                                    console.log(result.message ? result.message : 'Unexpected error occurred.');
                                     $('.resultSearchActivity').text(0);
                                 }
                             }).fail(function (response) {
                                 console.log(response);
-                                //$('.msgSearchActivity').html();
                             });
                         } else {
                             $('.listActivity').html('');
@@ -341,12 +338,11 @@
                                     $('.listActivity').html(out);
                                     $('.resultSearchActivity').text(result.data.length);
                                 } else {
+                                    console.log(result.message ? result.message : 'Unexpected error occurred.');
                                     $('.resultSearchActivity').text(0);
-                                    $('.msgSearchActivity').html(result.message ? result.message : 'Unexpected error occurred.');
                                 }
                             }).fail(function (response) {
                                 console.log(response);
-                                //$('.msgSearchActivity').html();
                             });
                         } else {
                             $('.listActivity').html('');
@@ -360,8 +356,6 @@
             function searchByAreaPath(e) {
                 var key = e.keyCode || e.which;
                 if (key == 13) { // press ENTER
-                    $('.msgSearchArea').html('');
-
                     var areaPath = $(e.target).val();
                     if (areaPath) {
                         // get areaPaths from api
@@ -381,12 +375,11 @@
                                 $('.listAreaPath').html(row);
                                 $('.resultSearchAreaPath').text(1);
                             } else {
-                                 $('.msgSearchArea').html(result.message ? result.message : 'Unexpected error occurred.');
+                                console.log(result.message ? result.message : 'Unexpected error occurred.');
                                 $('.resultSearchAreaPath').text(0);
                             }
                         }).fail(function (response) {
                             console.log(response);
-                            //$('.msgSearchArea').html('');
                         });
                     } else {
                         $('.listAreaPath').html('');

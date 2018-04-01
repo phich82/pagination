@@ -108,6 +108,7 @@ return [
             'required'    => 'Activity start date must be required.',
             'max'         => 'Activity start date must be maximum 10 characters',
             'date_format' => 'Activity start date must be a format "Y-m-d".',
+            'unique'      => 'Activity start date has already been taken.',
         ],
         'activity_end_date' => [
             'max'         => 'Activity end date must be maximum 10 characters',
@@ -118,6 +119,7 @@ return [
             'required'    => 'Purchase start date must be required.',
             'max'         => 'Purchase start date must be maximum 10 characters',
             'date_format' => 'Purchase start date must be a format "Y-m-d".',
+            'unique'      => 'Purchase start date has already been taken.',
         ],
         'purchase_end_date' => [
             'max'         => 'Purchase end date must be maximum 10 characters',

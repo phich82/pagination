@@ -32,7 +32,10 @@ Route::post('test/destroy', 'TestController@destroy');
 Route::get('basic', 'BasicController@index');
 
 Route::get('promotions/create', 'PromotionController@create');
+Route::get('promotions/{id}', 'PromotionController@edit');
 Route::post('promotions/store', 'PromotionController@store');
+Route::put('promotions/{id}/edit', 'PromotionController@update');
+Route::delete('promotions/{id}', 'PromotionController@destroy');
 
 Route::get('activities/{id}', function ($id) {
     $client = new \GuzzleHttp\Client([
