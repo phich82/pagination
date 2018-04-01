@@ -3,6 +3,7 @@
 use App\Post;
 use App\Commons\CSV;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,42 @@ Route::post('test/destroy', 'TestController@destroy');
 Route::get('basic', 'BasicController@index');
 
 Route::get('promotions/create', 'PromotionController@create');
+Route::post('promotions/store', 'PromotionController@store');
+
+Route::get('activities/{id}', function ($id) {
+    $client = new \GuzzleHttp\Client([
+        'base_uri' => 'https://jsonplaceholder.typicode.com/',
+        'headers'  => ['Accept'  => 'application/json']
+    ]);
+    //$res    = $client->request('GET', $url, ['verify' => '../cacert.pem']);
+    $res    = $client->get('posts/'.$id, ['verify' => false]);
+    $status = $res->getStatusCode();
+    $body   = json_decode($res->getBody());
+    return response()->json(['status' => $status, 'data' => $body]);
+});
+
+Route::get('activities/title/{title}', function ($title) {
+    $client = new \GuzzleHttp\Client([
+        'base_uri' => 'https://jsonplaceholder.typicode.com/',
+        'headers'  => ['Accept'  => 'application/json']
+    ]);
+    //$res    = $client->request('GET', $url, ['verify' => '../cacert.pem']);
+    $res    = $client->get('posts/?userId='.$title, ['verify' => false]);
+    $status = $res->getStatusCode();
+    $body   = json_decode($res->getBody());
+    return response()->json(['status' => $status, 'data' => $body]);
+});
+
+Route::get('area-paths/{area}', function ($area) {
+    $client = new \GuzzleHttp\Client([
+        'headers'  => ['Accept'  => 'application/json']
+    ]);
+    //$res    = $client->request('GET', $url, ['verify' => '../cacert.pem']);
+    $res    = $client->get('http://md5.jsontest.com/?text='.$area);
+    $status = $res->getStatusCode();
+    $body   = json_decode($res->getBody());
+    return response()->json(['status' => $status, 'data' => $body]);
+});
 
 Route::get('csv2', function () {
     $titles = ['id' => 'Id', 'title' => 'Title', 'body' => 'Body'];

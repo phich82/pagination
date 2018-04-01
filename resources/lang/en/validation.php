@@ -104,6 +104,34 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'activity_start_date' => [
+            'required'    => 'Activity start date must be required.',
+            'max'         => 'Activity start date must be maximum 10 characters',
+            'date_format' => 'Activity start date must be a format "Y-m-d".',
+        ],
+        'activity_end_date' => [
+            'max'         => 'Activity end date must be maximum 10 characters',
+            'date_format' => 'Activity end date must be a format "Y-m-d".',
+            'after'       => 'Activity end date must be higher than activity start date.'
+        ],
+        'purchase_start_date' => [
+            'required'    => 'Purchase start date must be required.',
+            'max'         => 'Purchase start date must be maximum 10 characters',
+            'date_format' => 'Purchase start date must be a format "Y-m-d".',
+        ],
+        'purchase_end_date' => [
+            'max'         => 'Purchase end date must be maximum 10 characters',
+            'date_format' => 'Purchase end date must be a format "Y-m-d".',
+            'after'       => 'Purchase end date must be higher than purchase start date.',
+        ],
+        'rate_type' => [
+            'required' => 'Rate type must be required.',
+            'integer'  => 'Rate type must be a integer.',
+        ],
+        'amount' => [
+            'required' => 'Amount must be required.',
+            'numeric'  => 'Amount must be a valid number.',
+        ],
     ],
 
     /*
