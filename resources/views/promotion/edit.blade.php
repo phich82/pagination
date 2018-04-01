@@ -34,7 +34,7 @@
                 @if (!empty($promotion))
                 <div class="row">
                     <div class="col-md-2" style="padding-left: 20px; margin-top: 30px; margin-bottom: 30px;">
-                        <a href="javascript:void(0)" onclick="deletePromotion({{ $promotion->id }})" data-toggle="modal" data-target="#confirmDeleteModal" style="color: red; text-decoration: underline;">
+                        <a href="javascript:void(0)" data-id="{{ $promotion->id }}" data-toggle="modal" data-target="#confirmDeleteModal" style="color: red; text-decoration: underline;">
                             <i class="far fa-trash-alt" style="margin-right: 2px;"></i>Delete {{ $promotion->promotionName }}
                         </a>
                     </div>
@@ -154,23 +154,17 @@
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmDeleteModalLabel">Delete</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="modal-body">
-                        <div class="text-right" style="margin-top: 20px; font-size: 30px;">
+                        <div class="text-center" style="font-size: 60px;">
                             <i class="far fa-question-circle"></i>
                         </div>
-                        <div class="text-right" style="margin-top: 20px;">
-                            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                        <div class="text-center msgConfirm" style="margin-top: 20px;">
+                            Are you sure to delete this?
                         </div>
                     </div>
                     <div class="text-center" style="margin-bottom: 30px;">
-                        <button type="button" class="btn btn-primary btnYes" data-dismiss="modal">Yes</button>
-                        <button type="button" class="btn btnClose" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-primary btnYes" data-dismiss="modal" style="padding: 5px 20px;">はい (Yes)</button>
+                        <button type="button" class="btn btnClose" data-dismiss="modal" style="padding: 5px 20px;">キャンセル (No)</button>
                     </div>
                 </div>
             </div>
@@ -183,19 +177,20 @@
         <script>
 
             // process popup Search By Area
-            $('#areaPathModal').on('show.bs.modal', function (event) {
+            $('#confirmDeleteModal').on('show.bs.modal', function (event) {
                 var modal = $(this);
-                $(document).on('click', '#areaPathModal .listAreaPath .rowActive a', function (e) {
-                    var areaPath = $(this).text();
-                
-                    $('input[name="area_pathJP"]').attr('value', areaPath);
-                    $('input[name="area_pathJP"]').show();
+                var id = $('a[data-target="#confirmDeleteModal"]').data('id');
+
+                $(document).on('click', '.btnYes', function (e) {
+                    modal.find('.msgConfirm').html('Are you sure?');
+                    deletePromotion(id);
                     modal.modal('hide');
                 });
             });
 
             function deletePromotion(id) {
                 if (!isNaN(id)) {
+                    alert('Delete successfully.');
                 }
             }
             
