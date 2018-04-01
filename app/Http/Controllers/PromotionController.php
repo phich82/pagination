@@ -32,6 +32,7 @@ class PromotionController extends Controller
     public function edit($id)
     {
         $promotion = $this->promotionRepository->find($id);
+        //dd($promotion);
         return view('promotion.edit', compact('promotion'));
     }
 
