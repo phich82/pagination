@@ -20,6 +20,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('posts-test', 'PostController@showPosts');
+
 Route::get('posts', 'PostController@index');
 Route::post('paginator/posts', 'PostController@paginator');
 Route::get('paginator/list', 'PostController@showPosts');
@@ -32,7 +34,7 @@ Route::post('test/destroy', 'TestController@destroy');
 Route::get('basic', 'BasicController@index');
 
 Route::get('promotions/create', 'PromotionController@create');
-Route::get('promotions/{id}', 'PromotionController@edit');
+Route::get('promotions/{id}', 'PromotionController@edit')->name('promotion.edit');
 Route::post('promotions/store', 'PromotionController@store');
 Route::put('promotions/{id}/edit', 'PromotionController@update');
 Route::delete('promotions/{id}', 'PromotionController@destroy');
@@ -47,6 +49,17 @@ Route::get('activities/{id}', function ($id) {
     $status = $res->getStatusCode();
     $body   = json_decode($res->getBody());
     return response()->json(['status' => $status, 'data' => $body]);
+});
+
+Route::post('/upload-csv', function (\Illuminate\Http\Request $request) {
+    $uploadedFile = $request->input('usersCsvFile')->openFile();
+
+    $returnArray = collect();
+    while (!$uploadedFile->eof()) {
+        $returnArray->push($uploadedFile->fgets());
+    }
+
+    return $returnArray;
 });
 
 Route::get('activities/title/{title}', function ($title) {

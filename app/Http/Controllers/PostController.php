@@ -14,9 +14,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostController extends Controller
 {
+    private $post;
+
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+    }
+
     public function index()
     {
-        $posts = Post::paginate(10);
+        $posts = $this->post->paginate(10);
         $items = [
             [
                 'body' => "Atque in dolores est. Dolor aut ut aspernatur a qui. Eos eligendi ipsam et omnis quia totam voluptatem. Quia cum explicabo facere repellat.",
@@ -185,12 +192,12 @@ class PostController extends Controller
             'photos' => $out
         ];
         
-        return response()->json($response);        
+        return response()->json($response);
     }
     
     public function showPosts(Request $request)
     {
-        $posts = Post::paginate(5);
+        $posts = $this->post->paginate(5);
         if ($request->ajax()) {
             return view('_list', compact('posts'))->render();
         }

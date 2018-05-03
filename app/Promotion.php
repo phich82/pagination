@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Promotion extends Model
 {
     protected $fillable = [
-        'activity_id', 
-        'activity_title', 
+        'activity_id',
+        'activity_title',
         'area_pathJP',
         'activity_start_date',
         'activity_end_date',

@@ -5,7 +5,6 @@ namespace App\Commons;
 use PHPUnit\Framework\Constraint\Exception;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-
 class CSV
 {
     private static $timeLimit = 60;
@@ -25,12 +24,14 @@ class CSV
      */
     public static function limitTime($n)
     {
-        if (is_int($n)) self::$timeLimit = $n;
+        if (is_int($n)) {
+            self::$timeLimit = $n;
+        }
         return new self;
     }
 
     /**
-     * 
+     *
      */
     public static function delimiter($delimiter = ',')
     {
@@ -58,7 +59,9 @@ class CSV
      */
     public static function titles($titles = [])
     {
-        if (!is_array($titles)) throw new Exception('Argument should be an array.');
+        if (!is_array($titles)) {
+            throw new Exception('Argument should be an array.');
+        }
         self::$titles = array_values($titles);
         self::$fields = array_keys($titles);
         return new self;
@@ -101,9 +104,12 @@ class CSV
         if ($headers) {
             if (is_string($headers)) {
                 $split = explode(':', $headers);
-                if (count($split) === 2) self::$headers[$split[0]] = $split[1];
+                if (count($split) === 2) {
+                    self::$headers[$split[0]] = $split[1];
+                }
+            } elseif (is_array($headers) && count($headers)) {
+                self::$headers = $headers;
             }
-            else if (is_array($headers) && count($headers)) self::$headers = $headers;
         }
         return new self;
     }
@@ -131,8 +137,8 @@ class CSV
      *
      * @return void
      */
-    public function send() {
-
+    public function send()
+    {
     }
 
     /**
@@ -153,23 +159,23 @@ class CSV
         $headers   = self::getHeaders();
 
         /**
-         * The CSV isn’t actually outputted until send() is called 
+         * The CSV isn’t actually outputted until send() is called
          * (which is done automatically later by Laravel) and you can add headers if you want.
-         * 
+         *
          * Notes:
          * - Remember check your execution time, so set it to unlimited with:
-         *      set_time_limit(0); 
+         *      set_time_limit(0);
          *      or reset it every chunk.
-         * - Exporting UTF-8 data? Set the UTF-8 BOM directly after opening the stream: 
+         * - Exporting UTF-8 data? Set the UTF-8 BOM directly after opening the stream:
          *      fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-         * - Check your countries settings for the delimiter. 
-         *      In the Netherlands for example, MS Excel recognizes the ';' delimiter, 
+         * - Check your countries settings for the delimiter.
+         *      In the Netherlands for example, MS Excel recognizes the ';' delimiter,
          *      but not the (default) ','.
-         * - Is it still taking too long (download)? 
-         *      You could use a Queue to create a file in the background and present 
+         * - Is it still taking too long (download)?
+         *      You could use a Queue to create a file in the background and present
          *      it as a download when ready.
          */
-        $response = new StreamedResponse(function() use ($contents, $titles, $fields, $delimiter, $headers, $callback) {
+        $response = new StreamedResponse(function () use ($contents, $titles, $fields, $delimiter, $headers, $callback) {
             // Open output stream
             $fp = fopen('php://output', 'w');
 
@@ -188,15 +194,21 @@ class CSV
                             if (!empty($fields)) {
                                 $out = [];
                                 foreach ($fields as $field) { // only filter for fields required
-                                    if (array_key_exists($field, $row)) $out[] = $row[$field];
+                                    if (array_key_exists($field, $row)) {
+                                        $out[] = $row[$field];
+                                    }
                                 }
                                 // Add each new row
                                 fputcsv($fp, $out, $delimiter);
                                 $out = []; // reset
-                            } else fputcsv($fp, $row, $delimiter);
+                            } else {
+                                fputcsv($fp, $row, $delimiter);
+                            }
                         }
                     } else { // default
-                        foreach ($contents as $row) fputcsv($fp, $row, $delimiter);
+                        foreach ($contents as $row) {
+                            fputcsv($fp, $row, $delimiter);
+                        }
                     }
                 }
             }
